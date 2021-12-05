@@ -8,11 +8,15 @@ from pygame.locals import *
 
 
 def simpView(A, B, b, c):
+    mb = max(b)
+    maxRoot = max(mb / (1 if i == 0 else i) for i in A[b.index(mb)])
+    print("doot: "+str(maxRoot))
     winsize = 500
-    scale = 50
+    scale = 250 / maxRoot
     point_size = 5
     constraint_thickness = 2
     axis_thickness = 3
+    limit = (3/2) * maxRoot
 
 
     constr_colours = [
@@ -38,12 +42,12 @@ def simpView(A, B, b, c):
 
     def constraint(a1, a2, bi, scale):
         if a2 == 0:
-            start = [bi * scale + winsize/2, -10 * -scale + winsize/2]
-            end = [bi * scale + winsize/2, 10 * -scale + winsize/2]
+            start = [bi * scale + winsize/2, -limit * -scale + winsize/2]
+            end = [bi * scale + winsize/2, limit * -scale + winsize/2]
             return [start, end]
         
-        start = [-10 * scale + winsize/2, -scale * (bi-a1 * (-10))/(a2)+winsize/2]
-        end = [10 * scale + winsize/2, -scale * (bi-a1 * (10))/(a2)+winsize/2]
+        start = [-limit * scale + winsize/2, -scale * (bi-a1 * (-limit))/(a2)+winsize/2]
+        end = [limit * scale + winsize/2, -scale * (bi-a1 * (limit))/(a2)+winsize/2]
         return [start, end]
 
     pygame.init()

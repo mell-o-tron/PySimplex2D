@@ -13,7 +13,7 @@ def simpView(A, B, b, c):
     maxRoot = max(mb / (1 if i == 0 else i) for i in A[b.index(mb)])
     print("doot: "+str(maxRoot))
     winsize = 500
-    scale = 200 / maxRoot
+    scale = 150 / maxRoot
     point_size = 5
     constraint_thickness = 2
     axis_thickness = 3
@@ -105,12 +105,12 @@ def simpView(A, B, b, c):
         for i in intersections:
             if all(A[v][0] * i[0] + A[v][1] *i[1] <= b[v] for v in range(len(A))):
                 filteredsections.append((i[0] * scale + winsize/2, i[1] * -scale + winsize/2))
-
-
-        # So this is a terrible approach, a decent one could be visiting the vertices by moving along the edges.
-        for i in itertools.permutations(filteredsections):
-            pygame.draw.polygon(screen, (0, 100, 100), i, width = 0)
-        
+        if len(filteredsections) > 2:
+            # So this is a terrible approach, a decent one could be visiting the vertices by moving along the edges.
+            for i in itertools.permutations(filteredsections):
+                pygame.draw.polygon(screen, (0, 100, 100), i, width = 0)
+        elif len(filteredsections) == 2:
+            pygame.draw.line(screen, (0, 100, 100), filteredsections[0], filteredsections[1] , 10)
     
     
     ########################################### SIMPLEX ITERATION ###########################################
@@ -145,9 +145,12 @@ def simpView(A, B, b, c):
         
         ABinv = np.linalg.inv(np.matrix(AB))
         
+        print("ABinv:")
+        print(np.matrix(ABinv))
         x = np.asarray(np.matmul(ABinv, bB))[0]
         yB = np.asarray(np.matmul(c, ABinv))[0]
         
+        #print("A tilde: " + str(np.matmul(AN,ABinv)))
         
         y = []
         j = 0

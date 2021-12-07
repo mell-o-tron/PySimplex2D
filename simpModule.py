@@ -4,6 +4,7 @@ import numpy as np
 import math
 from pygame.locals import *
 
+import itertools
 
 
 
@@ -12,7 +13,7 @@ def simpView(A, B, b, c):
     maxRoot = max(mb / (1 if i == 0 else i) for i in A[b.index(mb)])
     print("doot: "+str(maxRoot))
     winsize = 500
-    scale = 250 / maxRoot
+    scale = 200 / maxRoot
     point_size = 5
     constraint_thickness = 2
     axis_thickness = 3
@@ -81,7 +82,37 @@ def simpView(A, B, b, c):
         pygame.draw.line(screen, (255, 255, 255),p[0],p[1], axis_thickness)
         pygame.draw.line(screen, (255, 255, 255),p[2],p[3], axis_thickness)
 
+    def drawPolygon(A, b, scale):
+        intersections = []
+        filteredsections = []
+        for v1 in range(len(A)):
+            for v2 in range(len(A)):
+                if v1 != v2:
+                    
+                    a1 = A[v1][0]
+                    a2 = A[v2][0]
+                    b1 = A[v1][1]
+                    b2 = A[v2][1]
+                    c1 = -b[v1]
+                    c2 = -b[v2]
+                    
+                    if a1 * b2 - a2 * b1 != 0 and a1*b2 - a2*b1 != 0:
+                        inters = ((b1 * c2 - b2 * c1)/(a1 * b2 - a2 * b1), (c1*a2 - c2*a1)/(a1*b2 - a2*b1))
+                        
+                        if inters not in intersections:
+                            intersections.append(inters)
+        
+        for i in intersections:
+            if all(A[v][0] * i[0] + A[v][1] *i[1] <= b[v] for v in range(len(A))):
+                filteredsections.append((i[0] * scale + winsize/2, i[1] * -scale + winsize/2))
 
+
+        # So this is a terrible approach, a decent one could be visiting the vertices by moving along the edges.
+        for i in itertools.permutations(filteredsections):
+            pygame.draw.polygon(screen, (0, 100, 100), i, width = 0)
+        
+    
+    
     ########################################### SIMPLEX ITERATION ###########################################
 
     def simp_primale(A, B, b, c, first):
@@ -198,7 +229,7 @@ def simpView(A, B, b, c):
 
         # Draw a solid blue circle in the center
         
-    
+        drawPolygon(A, b, scale)
         drawAxis()
         drawConstraints(A, b, scale)
         drawFOb(c, scale)

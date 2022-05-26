@@ -1,8 +1,9 @@
 # PySimplex2D
-A visualisation of the primal simplex algorithm in R²
+A visualisation of the primal simplex algorithm in $\mathbb R^2$
 
 ## Problem Format
-Objective: max c\*x ; Constraints: Ax ≤ B
+- Objective: $\max c \cdot x$
+- Constraints: $Ax \leq B$
 
 ## Usage
 - Enter your problem data in `simp_user.py` and run it
